@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Village Animal Survey</string>
+    <string name="app_tagline">Village-Wise Livestock &amp; Pet Survey System</string>
+    <string name="all_villages">All Villages (Overview)</string>
+    <string name="total_animals">Total Animals</string>
+    <string name="total_owners">Registered Owners</string>
+    <string name="total_villages">Active Villages</string>
+    <string name="cows">Cows</string>
+    <string name="buffaloes">Buffaloes</string>
+    <string name="goats">Goats</string>
+    <string name="sheep">Sheep</string>
+    <string name="dogs">Dogs</string>
+    <string name="cats">Cats</string>
+    <string name="poultry">Poultry</string>
+    <string name="other_animals">Other Animals</string>
+</resources>

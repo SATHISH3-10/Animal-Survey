@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Verify that user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 2. Validate village payload structure
+    function hasRequiredVillageFields(data) {
+      return data.name is string && data.name.size() > 0
+          && data.district is string && data.district.size() > 0;
+    }
+
+    // 3. Validate owner payload structure
+    function hasRequiredOwnerFields(data) {
+      return data.name is string && data.name.size() > 0
+          && data.villageId is string && data.villageId.size() > 0;
+    }
+
+    // 4. Validate survey record payload structure
+    function hasRequiredSurveyFields(data) {
+      return data.villageId is string && data.villageId.size() > 0
+          && data.ownerId is string && data.ownerId.size() > 0
+          && data.animalCategory is string && data.animalCategory.size() > 0
+          && data.animalType is string && data.animalType.size() > 0
+          && data.quantity is int && data.quantity > 0;
+    }
+
+    // Villages collection: Only authenticated survey officers can read, create, update, or delete
+    match /villages/{villageId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && hasRequiredVillageFields(request.resource.data);
+      allow delete: if isAuthenticated();
+    }
+
+    // Owners collection: Only authenticated survey officers can manage owners
+    match /owners/{ownerId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && hasRequiredOwnerFields(request.resource.data);
+      allow delete: if isAuthenticated();
+    }
+
+    // Animal Surveys collection: Strict validation & authenticated access
+    match /animal_surveys/{surveyId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && hasRequiredSurveyFields(request.resource.data);
+      allow delete: if isAuthenticated();
+    }
+  }
+}
